@@ -2,6 +2,12 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+Using Bulma or Material-UI
+  --Bulma: Is by default
+    --remove theme
+  --MaterialUI: 
+      -- _app.js and _document.js: remove top and uncomment the MATERIL-UI section
+
 First, run the development server:
 
 ```bash
