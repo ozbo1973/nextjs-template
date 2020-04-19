@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import Head from "next/head";
 
 export default function Home() {
   return (
@@ -46,6 +46,9 @@ export default function Home() {
             </p>
           </a>
         </div>
+        <button onClick={() => alert("bulma")} class="button is-dark">
+          Dark
+        </button>
       </main>
 
       <footer>
@@ -200,5 +203,5 @@ export default function Home() {
         }
       `}</style>
     </div>
-  )
+  );
 }
