@@ -9,7 +9,13 @@ class MyDocument extends Document {
   render() {
     return (
       <Html>
-        <Head />
+        <Head>
+          <script
+            src="https://kit.fontawesome.com/d837ebb12d.js"
+            crossorigin="anonymous"
+            defer
+          ></script>
+        </Head>
         <body className="has-background-light">
           <Main />
           <NextScript />

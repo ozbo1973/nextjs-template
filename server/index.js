@@ -4,6 +4,7 @@ const next = require("next");
 const formData = require("express-form-data");
 const os = require("os");
 const mongoose = require("mongoose");
+const cookieSession = require("cookie-session");
 const mongoSessionStore = require("connect-mongo");
 const helmet = require("helmet");
 const compression = require("compression");
@@ -18,15 +19,15 @@ const formDataOptions = {
 };
 
 /* Database config and connect and handle error */
-const dbConnection = dev ? MONGO_URI_DEV : MONGO_URI;
 const mongooseOptions = {
-  useNewURLParser: true,
+  useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: true,
+  useUnifiedTopology: true,
 };
 
 mongoose
-  .connect(process.env[dbConnection], mongooseOptions)
+  .connect(process.env.MONGO_URI, mongooseOptions)
   .then(() => console.log(`-->${dev ? "Dev:" : "Prod: "} Database connected`));
 
 mongoose.connection.on("error", (err) => {
@@ -42,6 +43,13 @@ app.prepare().then(() => {
     server.use(helmet());
     server.use(compression());
   }
+
+  // cookie sessions
+  server.use(
+    cookieSession({
+      keys: [process.env.COOKIE_KEY],
+    })
+  );
 
   /* formatting requests */
   server.use(express.json());

@@ -9,7 +9,7 @@ const navEnd = ({ authConfig: { signup, login, logout } }) => {
   const isLogin = router.pathname === "/login";
 
   const styles = {
-    signup: `${signup.styles} ${!isLanding && !isLogin && "is-hidden"}`,
+    signup: `${signup.styles} ${!isLanding && !isLogin ? "is-hidden" : ""}`,
     login: `${login.styles} ${!isLanding && !isSignup && "is-hidden"}`,
     logout: `${logout.styles} ${
       (isLanding || isLogin || isSignup) && "is-hidden"

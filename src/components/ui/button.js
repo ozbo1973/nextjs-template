@@ -1,15 +1,15 @@
-import React from "react";
-
 const button = ({ handleClick, classNames, text }) => {
   const handleOnClick = (e) => {
     e.preventDefault;
     handleClick();
   };
 
-  return (
-    <a onClick={handleOnClick} className={`button ${classNames}`}>
+  return handleClick ? (
+    <button onClick={handleOnClick} className={`button ${classNames}`}>
       {text}
-    </a>
+    </button>
+  ) : (
+    <button className={`button ${classNames}`}>{text}</button>
   );
 };
 

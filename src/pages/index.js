@@ -1,13 +1,17 @@
 import Head from "next/head";
 
-export default function Home() {
+const Home = () => {
   return (
     <div>
       <Head>
         <title>Next JS Template with Bulma</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <h1>Home Page</h1>
+      <div className="container">
+        <h1>Home Page</h1>
+      </div>
     </div>
   );
-}
+};
+
+export default Home;
