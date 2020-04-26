@@ -15,7 +15,7 @@ const index = () => {
       <NavbarBrand imgSrc={branding.imgSrc} />
       <div id="navbarBasicExample" className="navbar-menu">
         <NavbarStart linkItems={linkItemsConfig} moreItems={moreItemsConfig} />
-        <NavbarEnd authConfig={authConfig} user={user} />
+        <NavbarEnd authConfig={authConfig} />
       </div>
     </nav>
   );

@@ -1,10 +1,12 @@
 // import App from 'next/app'
 import { useRouter } from "next/router";
+import { AppProvider } from "../contexts/appContext";
 import NavLayout from "../components/navLayout";
 import "../styles/styles.sass";
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
+
   const isLanding = router.pathname === "/";
 
   const styles = {
@@ -12,7 +14,7 @@ function MyApp({ Component, pageProps }) {
   };
 
   return (
-    <>
+    <AppProvider>
       <section className={styles.containerType}>
         <NavLayout />
         <main className="hero is-fullheight">
@@ -21,7 +23,7 @@ function MyApp({ Component, pageProps }) {
           </section>
         </main>
       </section>
-    </>
+    </AppProvider>
   );
 }
 

@@ -12,7 +12,7 @@ class MyDocument extends Document {
         <Head>
           <script
             src="https://kit.fontawesome.com/d837ebb12d.js"
-            crossorigin="anonymous"
+            crossOrigin="anonymous"
             defer
           ></script>
         </Head>

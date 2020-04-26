@@ -11,7 +11,7 @@ ctl.signup = async (req, res) => {
 
   // if user exists redirect to login
   if (user) {
-    return res.redirect("/login");
+    return res.send({ errMsg: "Email address already in use." });
   }
 
   // check passwords match
@@ -32,13 +32,35 @@ ctl.signup = async (req, res) => {
 };
 
 /* login */
-ctl.login = (req, res) => {
-  res.send("login");
+ctl.login = async (req, res) => {
+  const { email, password } = req.body;
+
+  // get user
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.send({ errMsg: "Email not found" });
+  }
+
+  // match passwords
+  if (password !== user.password) {
+    return res.send({ errMsg: "Incorrect Email or Password" });
+  }
+
+  // update session user
+  req.session.user = {
+    email: user.email,
+    username: user.username,
+    userId: user._id,
+  };
+
+  res.send({ success: "You are logged in" });
 };
 
 /* logout */
 ctl.logout = (req, res) => {
-  res.send("logout");
+  req.session = null;
+  res.send("logged out");
 };
 
 module.exports = ctl;

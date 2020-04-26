@@ -1,26 +1,36 @@
 import { useRouter } from "next/router";
+import { useContext } from "react";
+import axios from "axios";
 import Button from "../ui/button";
+import { AppContext, AppDispatch } from "../../contexts/appContext";
 
 const navEnd = ({ authConfig: { signup, login, logout } }) => {
   const router = useRouter();
+  const { isLoggedIn } = useContext(AppContext);
+  const dispatch = useContext(AppDispatch);
 
   const isLanding = router.pathname === "/";
   const isSignup = router.pathname === "/signup";
   const isLogin = router.pathname === "/login";
 
   const styles = {
-    signup: `${signup.styles} ${!isLanding && !isLogin ? "is-hidden" : ""}`,
-    login: `${login.styles} ${!isLanding && !isSignup && "is-hidden"}`,
-    logout: `${logout.styles} ${
-      (isLanding || isLogin || isSignup) && "is-hidden"
+    signup: `${signup.styles} ${
+      (!isLanding && !isLogin) || isLoggedIn ? "is-hidden" : ""
     }`,
+    login: `${login.styles} ${
+      (!isLanding && !isSignup) || isLoggedIn ? "is-hidden" : ""
+    }`,
+    logout: `${logout.styles} ${!isLoggedIn ? "is-hidden" : ""}`,
   };
 
   const authClick = {
     signUp: () => router.push(signup.path),
     login: () => router.push(login.path),
-    logout: () => {
+    logout: async () => {
       //clear out user
+      const { data } = await axios.get("/auth/logout");
+
+      dispatch({ type: "LOG_OUT" });
       router.push(logout.path);
     },
   };
