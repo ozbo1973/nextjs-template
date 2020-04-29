@@ -48,6 +48,7 @@ app.prepare().then(() => {
   server.use(
     cookieSession({
       keys: [process.env.COOKIE_KEY],
+      secure: !dev,
     })
   );
 
