@@ -6,29 +6,27 @@ const ctl = {};
 ctl.signup = async (req, res) => {
   const { email, username, password, confirmPassword } = req.body;
 
-  // check to see if user exists
-  const user = await User.findOne({ email });
-
-  // if user exists redirect to login
-  if (user) {
-    return res.send({ errMsg: "Email address already in use." });
-  }
-
   // check passwords match
   if (password !== confirmPassword) {
-    return res.redirect("/");
+    return res.send({ errMsg: "Passwords do not match" });
   }
 
-  // add user to database and set user
-  const newUser = await User.create({ email, username, password });
-  req.session.user = {
-    email: newUser.email,
-    username: newUser.username,
-    userId: newUser._id,
-  };
+  // create new User
+  try {
+    const newUser = new User({ email, username, password });
+    await newUser.save();
 
-  //return logged in
-  res.send(req.session.user);
+    // add user to session
+    req.session.user = {
+      email: newUser.email,
+      username: newUser.username,
+      userId: newUser._id,
+    };
+
+    res.send({ data: "You are logged in" });
+  } catch (error) {
+    res.send({ errMsg: error });
+  }
 };
 
 /* login */
@@ -36,15 +34,12 @@ ctl.login = async (req, res) => {
   const { email, password } = req.body;
 
   // get user
-  const user = await User.findOne({ email });
+  const user = await User.findByCredentials(email, password);
 
-  if (!user) {
-    return res.send({ errMsg: "Email not found" });
-  }
+  if (user.errMsg) {
+    const { ReferenceError = null } = user.errMsg;
 
-  // match passwords
-  if (password !== user.password) {
-    return res.send({ errMsg: "Incorrect Email or Password" });
+    return res.send({ errMsg: ReferenceError ? ReferenceError : user.errMsg });
   }
 
   // update session user

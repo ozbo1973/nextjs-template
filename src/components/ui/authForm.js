@@ -20,16 +20,22 @@ const authForm = ({ authType }) => {
     .split("")
     .map((ltr, i) => (i === 0 ? ltr.toUpperCase() : ltr))
     .join("");
-  const { email, username, password, confirmPassword } = state;
+  const { email, username, password, confirmPassword, errMsg = null } = state;
 
   const handleOnChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value });
   };
 
-  //   useEffect(() => {}, [email]);
+  useEffect(() => {}, [errMsg]);
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
+    // check to see if passwords match
+    if (authType === "signup" && password !== confirmPassword) {
+      return setState({ ...state, errMsg: "Passwords do not match." });
+    }
+
+    // build user data to post
     const userData =
       authType === "signup"
         ? {
@@ -42,18 +48,22 @@ const authForm = ({ authType }) => {
 
     try {
       const { data } = await axios.post(`/auth/${authType}`, userData);
+
+      // if errMsg is present update state and return.
       if (data.errMsg) {
-        throw Error(data.errMsg);
+        return setState({ ...state, errMsg: data.errMsg });
       }
 
+      // go to home page.
       router.push("/");
     } catch (error) {
-      console.log(error);
+      return setState({ ...state, errMsg: error });
     }
   };
 
   return (
     <form onSubmit={handleOnSubmit}>
+      {errMsg && <p className="has-text-danger">{errMsg}</p>}
       <Input icons={{ left: "envelope", right: "check" }}>
         <input
           className="input"

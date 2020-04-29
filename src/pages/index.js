@@ -7,7 +7,7 @@ const Home = ({ getUser }) => {
   const { userId = null } = user || {};
 
   useEffect(() => {
-    console.log("render home");
+    console.log("render home", isLoggedIn);
   }, [isLoggedIn]);
 
   return (

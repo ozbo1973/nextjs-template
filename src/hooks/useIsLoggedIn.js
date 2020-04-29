@@ -3,12 +3,16 @@ import { AppDispatch, AppContext } from "../contexts/appContext";
 
 const useIsLoggedIn = (getUser) => {
   const { isLoggedIn, user } = useContext(AppContext);
-
+  const { userId = null } = getUser;
   const dispatch = useContext(AppDispatch);
 
   useEffect(() => {
-    !isLoggedIn && getUser && dispatch({ type: "LOG_IN", payload: getUser });
-  }, [isLoggedIn]);
+    if (getUser.userId) {
+      dispatch({ type: "LOG_IN", payload: getUser });
+    } else {
+      dispatch({ type: "LOG_OUT" });
+    }
+  }, [userId]);
 
   return { isLoggedIn, user };
 };
