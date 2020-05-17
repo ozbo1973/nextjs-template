@@ -69,6 +69,7 @@ app.prepare().then(() => {
 
   /* Custom Routes */
   server.use("/auth", require("./routes/auth"));
+  server.use("/users", require("./routes/users"));
 
   /* handle all other requests */
   server.get("*", (req, res) => {

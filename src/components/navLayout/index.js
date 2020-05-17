@@ -4,7 +4,7 @@ import NavbarEnd from "./navEnd";
 import navConfig from "../../configs/nav";
 
 const index = () => {
-  const { linkItemsConfig, authConfig, moreItemsConfig, branding } = navConfig;
+  const { linkItemsConfig, moreItemsConfig, branding } = navConfig;
 
   return (
     <nav
@@ -15,7 +15,7 @@ const index = () => {
       <NavbarBrand imgSrc={branding.imgSrc} />
       <div id="navbarBasicExample" className="navbar-menu">
         <NavbarStart linkItems={linkItemsConfig} moreItems={moreItemsConfig} />
-        <NavbarEnd authConfig={authConfig} />
+        <NavbarEnd />
       </div>
     </nav>
   );

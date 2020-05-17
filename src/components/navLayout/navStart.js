@@ -15,6 +15,7 @@ const navStart = ({ linkItems, moreItems = null }) => {
       return (
         <Button
           text={item.name}
+          handleClick={() => router.push(item.href)}
           classNames={`is-text is-fullwidth ${isActive}`}
           key={i}
         />

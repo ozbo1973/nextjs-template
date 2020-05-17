@@ -6,7 +6,7 @@ navConfig.linkItemsConfig = [
 ];
 
 navConfig.moreItemsConfig = [
-  { name: "About", href: "/about" },
+  { name: "Profile", href: "/profile" },
   { name: "Contact", href: "/contact", divider: true },
   { name: "Other", href: "/other" },
 ];

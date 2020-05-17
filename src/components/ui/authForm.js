@@ -1,39 +1,42 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
-
+import { AppContext, AppDispatch } from "../../contexts/appContext";
 import Input from "./input";
 import Button from "./button";
 
-const defaultState = {
-  email: "",
-  username: "",
-  password: "",
-  confirmPassword: "",
-};
-
-const authForm = ({ authType }) => {
-  const [state, setState] = useState({ ...defaultState });
+const authForm = () => {
+  const { loginFromPage, defaultAuthFormState } = useContext(AppContext);
+  const dispatch = useContext(AppDispatch);
+  const [state, setState] = useState({ ...defaultAuthFormState });
   const router = useRouter();
-  const isHidden = router.pathname === "/login";
+  const authType = router.pathname.split("/")[1];
+
+  const isHidden = authType === "login";
   const buttonTxt = authType
     .split("")
     .map((ltr, i) => (i === 0 ? ltr.toUpperCase() : ltr))
     .join("");
-  const { email, username, password, confirmPassword, errMsg = null } = state;
+
+  const {
+    email,
+    username,
+    password,
+    confirmPassword,
+    errMsg,
+    hasErrors,
+  } = state;
 
   const handleOnChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value });
   };
 
-  useEffect(() => {}, [errMsg]);
+  useEffect(() => {
+    console.log("render authform");
+  }, [hasErrors]);
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
-    // check to see if passwords match
-    if (authType === "signup" && password !== confirmPassword) {
-      return setState({ ...state, errMsg: "Passwords do not match." });
-    }
 
     // build user data to post
     const userData =
@@ -49,22 +52,43 @@ const authForm = ({ authType }) => {
     try {
       const { data } = await axios.post(`/auth/${authType}`, userData);
 
-      // if errMsg is present update state and return.
       if (data.errMsg) {
-        return setState({ ...state, errMsg: data.errMsg });
+        return setState({ ...state, errMsg: data.errMsg, hasErrors: true });
       }
 
-      // go to home page.
-      router.push("/");
+      dispatch({
+        type: "LOG_IN",
+        payload: { getUser: data.user, cbRoute: loginFromPage },
+      });
+
+      router.push(loginFromPage);
     } catch (error) {
-      return setState({ ...state, errMsg: error });
+      return setState({
+        ...state,
+        errMsg: [
+          {
+            param: "systemError",
+            msg: "Unable to perform action. Check network connection",
+          },
+        ],
+        hasErrors: true,
+      });
     }
   };
 
+  // handle display errors
+  let errors = {};
+  for (const err of errMsg) {
+    errors[err.param] = err.msg;
+  }
+
   return (
     <form onSubmit={handleOnSubmit}>
-      {errMsg && <p className="has-text-danger">{errMsg}</p>}
-      <Input icons={{ left: "envelope", right: "check" }}>
+      {errors.systemError && <div>{errors.systemError}</div>}
+      <Input
+        validationError={errors.email}
+        icons={{ left: "envelope", right: "check" }}
+      >
         <input
           className="input"
           type="text"
@@ -75,7 +99,11 @@ const authForm = ({ authType }) => {
         />
       </Input>
 
-      <Input isHidden={isHidden} icons={{ left: "user", right: "check" }}>
+      <Input
+        validationError={errors.username}
+        isHidden={isHidden}
+        icons={{ left: "user", right: "check" }}
+      >
         <input
           className="input"
           type="text"
@@ -86,7 +114,7 @@ const authForm = ({ authType }) => {
         />
       </Input>
 
-      <Input icons={{ left: "lock" }}>
+      <Input validationError={errors.password} icons={{ left: "lock" }}>
         <input
           className="input"
           type="password"
@@ -97,7 +125,11 @@ const authForm = ({ authType }) => {
         />
       </Input>
 
-      <Input isHidden={isHidden} icons={{ left: "lock" }}>
+      <Input
+        validationError={errors.confirmPassword}
+        isHidden={isHidden}
+        icons={{ left: "lock" }}
+      >
         <input
           className="input"
           type="password"

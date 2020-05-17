@@ -6,7 +6,7 @@ const Icon = ({ placement, icon }) => {
   );
 };
 
-const input = ({ icons, children, isHidden }) => {
+const input = ({ icons, children, isHidden, validationError }) => {
   const { right = "", left = "" } = icons;
 
   return (
@@ -21,6 +21,9 @@ const input = ({ icons, children, isHidden }) => {
         {left && <Icon placement="left" icon={left} />}
         {right && <Icon placement="right" icon={right} />}
       </p>
+      {validationError && (
+        <div className="has-text-danger">{validationError}</div>
+      )}
     </div>
   );
 };

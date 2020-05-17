@@ -7,27 +7,27 @@ const scrypt = util.promisify(crypto.scrypt);
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    unique: [true, "Must have an email address"],
+    unique: [true, "Email already in use."],
     lowercase: true,
     trim: true,
   },
   username: {
     type: String,
-    unique: [true, "Must input a User Name."],
+    unique: [true, "Username already taken."],
     lowercase: true,
     trim: true,
   },
   password: {
     type: String,
     trim: true,
-    minlength: [6, "Must be at least 6 chars."],
   },
 });
 
 const comparePassword = async (saved, supplied) => {
   const [hashed, salt] = saved.split(".");
   const hashSupplied = await scrypt(supplied, salt, 64);
-  return hashed === hashSupplied;
+
+  return hashed === hashSupplied.toString("hex");
 };
 
 userSchema.statics.findByCredentials = async (email, suppliedPassword) => {
@@ -38,7 +38,8 @@ userSchema.statics.findByCredentials = async (email, suppliedPassword) => {
       throw new Error("unable to login");
     }
 
-    const isMatch = comparePassword(user.password, suppliedPassword);
+    const isMatch = await comparePassword(user.password, suppliedPassword);
+
     if (!isMatch) {
       throw new Error("unable to login");
     }
