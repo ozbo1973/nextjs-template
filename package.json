@@ -23,7 +23,7 @@
     "express-validator": "^6.4.0",
     "helmet": "^3.22.0",
     "mongoose": "^5.9.10",
-    "next": "9.3.5",
+    "next": "11.1.0",
     "node-sass": "^4.13.1",
     "nodemon": "^2.0.3",
     "react": "16.13.1",
